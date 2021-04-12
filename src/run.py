@@ -4,7 +4,7 @@ from Model import Model
 
 
 ################# INPUT PARAMETERS #################
-num_training_iterations = 10#500  # Increase this to train longer
+num_training_iterations = 500  # Increase this to train longer
 batch_size = 16  # Experiment between 1 and 64
 seq_length = 100
 learning_rate = 5e-3
