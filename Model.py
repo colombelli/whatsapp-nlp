@@ -1,23 +1,42 @@
-# Import Tensorflow 2.0
 import tensorflow as tf 
-
-# Import all remaining packages
-import numpy as np
-import os
-import time
-import functools
-from IPython import display as ipythondisplay
 from tqdm import tqdm
-
 from DataProcessing import DataProcessing
 
 
 # Based on MIT's introduction to Deep Learning course
 class Model:
 
-    def __init__(self, rnn_units, dropout, recurrent_dropout, learning_rate, batch_size,
-                num_training_iterations, seq_length, checkpoint_prefix, checkpoint_dir,
-                embedding_dim, data_processing:DataProcessing): 
+
+    """
+    LSTM model for learning from the data and generating a conversation.
+
+    The model recognizes all different possible words and map them to a number,
+    which will serve as a value in the sequence of messages. It stacks an LSTM
+    layer with a Dense layer working as the output for each next word given a
+    sequence of words.
+
+    Args:
+        rnn_units (int): number of neurons in the LSTM
+        dropout (float): between 0 and 1, representing the fraction of the units 
+                        to drop for the linear transformation of the inputs.
+        recurrent_dropout (float): between 0 and 1, representing the fraction of 
+                        the units to drop for the linear transformation of the 
+                        recurrent state.
+        learning_rate (float)
+        batch_size (int)
+        num_training_iterations (int): number of epochs to train
+        seq_length (int): the size of the word sequences for each training example
+        checkpoint_prefix (str): the file name of the saved checkpoints
+        checkpoint_dir (str): the directory where the checkpoints are to be saved
+        embedding_dim (int): the embedding dimesion to encode the words to
+        
+    """
+
+
+    def __init__(self, rnn_units:int, dropout:float, recurrent_dropout:float, 
+                learning_rate:float, batch_size:int, num_training_iterations:int, 
+                seq_length:int, checkpoint_prefix:str, checkpoint_dir:str,
+                embedding_dim:int, data_processing:DataProcessing): 
 
         self.dropout = dropout
         self.recurrent_dropout = recurrent_dropout

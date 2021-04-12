@@ -5,14 +5,20 @@ import random
 
 class DataProcessing:
 
+
     """
     Data processing for whatsapp imported messages.
+
     It operates aiming to converte all messages into a single string containing the contact sender
     name followed by a ':' and the message. Everything is separated by a ' ' which is used as word
-    delimiter separator to build the vocabulary.
+    delimiter separator to build the vocabulary and related objects.
+
+    The class also provides methods to get all the possible starting index of the training data, as
+    well as X and y batch data using these possible starting indexes.
 
     Args:
         file_path (str): path containing the whatsapp imported messages file
+
     """
 
     def __init__(self, file_path):
@@ -115,7 +121,7 @@ class DataProcessing:
         return possible_starts
 
 
-
+    # Returns X and y data in batch format, ready to train
     def get_batch(self, possible_starts, seq_len, batch_size):
 
         # randomly choose the starting indices for the examples in the training batch
