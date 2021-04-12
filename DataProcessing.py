@@ -89,5 +89,44 @@ class DataProcessing:
     def __vectorize_words(self):
         for word in self.vector_data_word:
             self.vector_data_idx.append(self.word2idx[word])
+
+        self.vector_data_idx = np.array(self.vector_data_idx)
         return
+    
+
+    # Returns the indexes in the message sequence that can initialize a conversation, in
+    # other words, the points in the sequence where the word is something like 'PersonA:'
+    def get_possible_starts(self, seq_len):
+
+        n = self.vector_data_idx.shape[0] - 1  # The length of the vectorized data
+        th = n - seq_len
+
+        names = list(self.history['name'].unique())
+        person_msg_idx = np.concatenate(
+            [np.squeeze(np.where(self.vector_data_idx == self.word2idx[name+':'])) for name in names]
+        )
+        person_msg_idx = np.squeeze(person_msg_idx)
+
+        possible_starts = []
+        for idx in person_msg_idx:
+            if idx < th:
+                possible_starts.append(idx)
         
+        return possible_starts
+
+
+
+    def get_batch(self, possible_starts, seq_len, batch_size):
+
+        # randomly choose the starting indices for the examples in the training batch
+        idx = np.random.choice(possible_starts, batch_size)
+
+        input_batch = [self.vector_data_idx[i:i+seq_len] for i in idx]
+        output_batch = [self.vector_data_idx[i+1:i+1+seq_len] for i in idx]
+
+        # x_batch, y_batch provide the true inputs and targets for network training
+        x_batch = np.reshape(input_batch, [batch_size, seq_len])
+        y_batch = np.reshape(output_batch, [batch_size, seq_len])
+        return x_batch, y_batch
+
+    
