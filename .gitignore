@@ -1,0 +1,24 @@
+**/.vscode/.ropeproject/**
+**/testFiles/**/.cache/**
+.vscode-test
+__pycache__
+npm-debug.log
+**/.mypy_cache/**
+**/.vscode-test/**
+**/.vscode test/**
+**/.vscode-smoke/**
+**/.venv*/
+precommit.hook
+pythonFiles/lib/**
+debug_coverage*/**
+bin/**
+obj/**
+.pytest_cache
+tmp/**
+.python-version
+.vs/
+test-results*.xml
+debug*.log
+debugpy*.log
+pydevd*.log
+./training_checkpoints
