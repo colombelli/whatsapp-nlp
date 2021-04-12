@@ -5,13 +5,23 @@ import numpy as np
 
 class DataProcessing:
 
+    """
+    Data processing for whatsapp imported messages.
+    It operates aiming to converte all messages into a single string containing the contact sender
+    name followed by a ':' and the message. Everything is separated by a ' ' which is used as word
+    delimiter separator.
+
+    Args:
+        file_path (str): path containing the whatsapp imported messages file
+    """
+
     def __init__(self, file_path):
         self.file_path = file_path
         self.history = None
-        self.df = None
+        self.all_messages = None
 
         self.__read_history()
-        self.__build_dataframe()
+        self.__build_all_messages_string()
 
 
     def __read_history(self):
@@ -33,5 +43,18 @@ class DataProcessing:
         return
 
 
-    def __build_dataframe(self):
+
+    # Messages format will look like
+    # PersonA: hallo message PersonB: yo! PersonA: how are you?
+    def __build_all_messages_string(self):
+
+        history = self.history.loc[:, ['name', 'msg']]
+
+        all_messages = ""
+        for index, row in history.iterrows():
+            name = row['name']
+            msg = row['msg']
+            all_messages += name + ": " + msg + " "
+        
+        self.all_messages = all_messages
         return
