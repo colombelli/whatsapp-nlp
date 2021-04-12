@@ -35,7 +35,8 @@ The first thing to do is exporting an WhatsApp chat history:
 1. Open the individual or group chat; 
 2. Tap More Options (the three vertical dots) > More > Export chat; 
 3. Choose to export the chat without media.
-<ref:https://faq.whatsapp.com/android/chats/how-to-save-your-chat-history/?lang=en>
+
+[ref: https://faq.whatsapp.com/android/chats/how-to-save-your-chat-history/?lang=en]
 
 Going back to the whatsapp-nlp package, edit the file ./src/run.py with your input parameters:
 * ```file```: the path to the exported chat file
