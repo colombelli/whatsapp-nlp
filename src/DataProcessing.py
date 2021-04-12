@@ -53,6 +53,10 @@ class DataProcessing:
         # file_path is in the format 'WhatsApp Conversation with XXX.txt'
         history['conv_name'] = self.file_path[19:-4]
 
+        # Format composed names to use an underline '_' instead of blank space ' '
+        formatted_names = [name.replace(' ', '_') for name in history['name']]
+        history['name'] = formatted_names
+
         self.history = history
         return
 
@@ -71,10 +75,8 @@ class DataProcessing:
             all_messages += name + ": " + msg + " "
         
 
-        # Eliminates <PersonA omitted> messages
-        names = list(self.history['name'].unique())
-        for name in names:
-            all_messages = all_messages.replace("<"+name+" omitted>", '')
+        # Eliminates <Media omitted> messages
+        all_messages = all_messages.replace("<Media omitted>", '')
 
         # Eliminates 'This message was deleted' messages
         all_messages = all_messages.replace("This message was deleted", '')

@@ -1,4 +1,6 @@
 .vscode/*
+.vscode
+.vscode/
 **/.vscode/.ropeproject/**
 **/testFiles/**/.cache/**
 .vscode-test
@@ -22,4 +24,4 @@ test-results*.xml
 debug*.log
 debugpy*.log
 pydevd*.log
-./training_checkpoints
+training_checkpoints
