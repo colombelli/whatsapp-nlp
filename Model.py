@@ -8,48 +8,57 @@ import time
 import functools
 from IPython import display as ipythondisplay
 from tqdm import tqdm
-import mitdeeplearning as mdl
 
-import DataProcessing
+from DataProcessing import DataProcessing
 
 
 # Based on MIT's introduction to Deep Learning course
 class Model:
 
     def __init__(self, rnn_units, dropout, recurrent_dropout, learning_rate, batch_size,
-                num_training_iterations, seq_length, data_processing:DataProcessing): 
+                num_training_iterations, seq_length, checkpoint_prefix, checkpoint_dir,
+                embedding_dim, data_processing:DataProcessing): 
 
-        self.lstm_layer = tf.keras.layers.LSTM(
-                                rnn_units, 
-                                return_sequences=True, 
-                                recurrent_initializer='glorot_uniform',
-                                recurrent_activation='sigmoid',
-                                stateful=True,
-                                dropout=dropout, 
-                                recurrent_dropout=recurrent_dropout
-                            )
+        self.dropout = dropout
+        self.recurrent_dropout = recurrent_dropout
+        self.rnn_units = rnn_units
 
         self.optimizer = tf.optimizers.Adam(learning_rate)
         self.batch_size = batch_size
         self.num_training_iterations = num_training_iterations
         self.seq_length = seq_length
-        self.possible_starts = data_processing.get_possible_starts(seq_length)
+        self.checkpoint_prefix = checkpoint_prefix
+        self.checkpoint_dir = checkpoint_dir
+        self.embedding_dim = embedding_dim
         self.data_processing = data_processing
+        self.possible_starts = data_processing.get_possible_starts(seq_length)
         self.model = self.__build_model()
 
 
     # Defining the RNN Model
-    def __build_model(self):
+    def __build_model(self, batch_size=None):
         vocab_size = len(self.data_processing.vocabulary)
-        embedding_dim = 0.25 ** vocab_size
+
+        if not batch_size:
+            batch_size = self.batch_size
+
+        lstm_layer = tf.keras.layers.LSTM(
+                                self.rnn_units, 
+                                return_sequences=True, 
+                                recurrent_initializer='glorot_uniform',
+                                recurrent_activation='sigmoid',
+                                stateful=True,
+                                dropout=self.dropout, 
+                                recurrent_dropout=self.recurrent_dropout
+                            )
 
         model = tf.keras.Sequential([
             # Layer 1: Embedding layer to transform indexes into dense vectors 
             #   of a fixed embedding size
-            tf.keras.layers.Embedding(vocab_size, embedding_dim, batch_input_shape=[self.batch_size, None]),
+            tf.keras.layers.Embedding(vocab_size, self.embedding_dim, batch_input_shape=[batch_size, None]),
 
             # Layer 2: LSTM with `rnn_units` number of units. 
-            self.lstm_layer,
+            lstm_layer,
 
             # Layer 3: Dense (fully-connected) layer that transforms the LSTM output
             #   into the vocabulary size.
@@ -76,10 +85,9 @@ class Model:
 
 
 
-    def train_model(self, checkpoint_prefix):
+    def train_model(self):
 
         tr_history = []
-        plotter = mdl.util.PeriodicPlotter(sec=2, xlabel='Iterations', ylabel='Loss')
         if hasattr(tqdm, '_instances'): tqdm._instances.clear() # clear if it exists
 
 
@@ -92,18 +100,23 @@ class Model:
 
             # Update the progress bar
             tr_history.append(loss.numpy().mean())
-            plotter.plot(tr_history)
 
             # Update the model with the changed weights!
             if iter % 100 == 0:     
-                self.model.save_weights(checkpoint_prefix)
+                self.model.save_weights(self.checkpoint_prefix)
             
         # Save the trained model and the weights
-        self.model.save_weights(checkpoint_prefix)
+        self.model.save_weights(self.checkpoint_prefix)
 
 
     
     def generate_text(self, start_word, generation_length=1000):
+
+        model = self.__build_model(batch_size=1)
+
+        # Restore the model weights for the last checkpoint after training
+        model.load_weights(tf.train.latest_checkpoint(self.checkpoint_dir))
+        model.build(tf.TensorShape([1, None]))        
 
         input_eval = [self.data_processing.word2idx[start_word]]
         input_eval = tf.expand_dims(input_eval, 0)
@@ -112,12 +125,12 @@ class Model:
         text_generated = []
 
         # Here batch size == 1
-        self.model.reset_states()
+        model.reset_states()
         tqdm._instances.clear()
 
         for _ in tqdm(range(generation_length)):
             
-            predictions = self.model(input_eval)
+            predictions = model(input_eval)
             
             # Remove the batch dimension
             predictions = tf.squeeze(predictions, 0)
