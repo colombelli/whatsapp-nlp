@@ -12,7 +12,7 @@ LSTM model for WhatsApp natural language processing given exported conversation 
 
 The proposal of this repository, other than studying LSTMs for Natural Language Processing, is to provide a simple automatic solution for training and generating text messages based on WhatsApp chats conversation history. It also works for chat groups with more than two people.
 
-There's an interesting aspect to this process regarding the investigation of people's interaction patterns. Examples of this could be who talks more about what, or people they behave in general while chatting in that chat.  
+There's an interesting aspect to this process regarding the investigation of people's interaction patterns. Examples of this could be who talks more about what, or how they behave in general while talking in that chat. However, there's no guarantee, of course, that the observed learned chatting pattern is actually related to that person or if it's something that usually comes up in the chat, and this is due to the fact that a person is interpreted as just another value in the string sequence. 
 
 ## Installation
 
