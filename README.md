@@ -45,7 +45,7 @@ Going back to the whatsapp-nlp package, edit the file ./src/run.py with your inp
 * ```seq_length```: an integer representing how many words should a chatting training example have (counting with the name of who sent that message)
 * ```learning_rate```: a float, in which the bigger the value, the quicker the convergence, but the model could pass-by better local minima
 * ```rnn_units```: the number of neurons for the LSTM layer
-* ```droput```: a float between 0 and 1, representing the fraction of the units to drop for the linear transformation of the inputs
+* ```dropout```: a float between 0 and 1, representing the fraction of the units to drop for the linear transformation of the inputs
 * ```recurrent_dropout```: a float between 0 and 1, representing the fraction of the units to drop for the linear transformation of the recurrent state
 * ```embedding_dim```: an integer with the embedding dimension to be used
 
