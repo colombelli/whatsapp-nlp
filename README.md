@@ -10,7 +10,7 @@ LSTM model for WhatsApp natural language processing given exported conversation 
 
 ## Introduction
 
-The proposal of this repository, other than studying LSTMs for Natural Language Processing, is to provide a simple automatic solution for training and generating text messages based on WhatsApp chats conversation history. It also works for chat groups with more than two people.
+The proposal of this repository, other than studying LSTMs for Natural Language Processing, is to provide a simple automatic solution for training a model and generating text messages based on WhatsApp chats conversation history. It also works for chat groups with more than two people.
 
 There's an interesting aspect to this process regarding the investigation of people's interaction patterns. Examples of this could be who talks more about what, or how they behave in general while talking in that chat. However, there's no guarantee, of course, that the observed learned chatting pattern is actually related to that person or if it's something that usually comes up in the chat. This is due to the fact that a person is interpreted as just another value in the string sequence. 
 
@@ -40,14 +40,14 @@ The first thing to do is exporting an WhatsApp chat history:
 
 Going back to the whatsapp-nlp package, edit the file ./src/run.py with your input parameters:
 * ```file```: the path to the exported chat file
-* ```num_training_iterations```: the bigger this integer, the longer the training
-* ```batch_size```: an integer where anything whithin 1 and 64 should be fine
-* ```seq_length```: an integer representing how many words should a chatting training example have (counting with the name of who sent that message)
-* ```learning_rate```: a float, in which the bigger the value, the quicker the convergence, but the model could pass-by better local minima
-* ```rnn_units```: the number of neurons for the LSTM layer
-* ```dropout```: a float between 0 and 1, representing the fraction of the units to drop for the linear transformation of the inputs
-* ```recurrent_dropout```: a float between 0 and 1, representing the fraction of the units to drop for the linear transformation of the recurrent state
-* ```embedding_dim```: an integer with the embedding dimension to be used
+* ```num_training_iterations```: an integer representing the amount of epochs of the learning process
+* ```batch_size```: an integer representing the number of observations seen at once before optimizing the loss function (anything whithin 1 and 64 should be fine)
+* ```seq_length```: an integer representing how many words should a chat training example have (counting with the name of who sent that message)
+* ```learning_rate```: a float in which the bigger the value, the quicker the convergence, but the model could pass-by better local minima
+* ```rnn_units```: an integer representing the number of neurons for the LSTM layer
+* ```dropout```: a float between 0 and 1 representing the fraction of the units to drop for the linear transformation of the inputs
+* ```recurrent_dropout```: a float between 0 and 1 representing the fraction of the units to drop for the linear transformation of the recurrent state
+* ```embedding_dim```: an integer representing the embedding dimension to be used
 
 After editing these parameters, go back to de terminal, change your directory to /whatsapp-nlp/src/ and execute the run.py script:
     
